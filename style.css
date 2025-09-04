@@ -1,0 +1,26 @@
+:root{
+  --paper:#f2eee3;
+  --ink:#000;
+}
+
+html,body{
+  margin:0; padding:0; height:100%;
+  background:var(--paper);
+  overflow:hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.stage{
+  position:fixed; inset:0;
+}
+
+svg{ position:absolute; inset:0; width:100%; height:100%; }
+
+#bg{ z-index:0; pointer-events:none; }
+#dragon{ z-index:1; pointer-events:none; }
+
+.credit{
+  position:fixed; left:0; right:0; bottom:8px;
+  text-align:center; font-size:12px; letter-spacing:.3px;
+  color:#000; opacity:.45; user-select:none; z-index:2;
+}
