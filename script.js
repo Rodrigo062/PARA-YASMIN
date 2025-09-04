@@ -1,7 +1,6 @@
 /* ===== marca-d'água + flores ===== */
 const bg = document.getElementById("bg");
 
-// defs: símbolo simples de flor (6 pétalas)
 const bgDefs = document.createElementNS("http://www.w3.org/2000/svg","defs");
 bgDefs.innerHTML = `
   <g id="flower">
@@ -18,7 +17,6 @@ bgDefs.innerHTML = `
 `;
 bg.appendChild(bgDefs);
 
-// texto Yasmim (marca d'água)
 const water = document.createElementNS("http://www.w3.org/2000/svg","text");
 water.setAttribute("x","50%");
 water.setAttribute("y","50%");
@@ -29,23 +27,17 @@ water.setAttribute("opacity",".07");
 water.setAttribute("style",`
   font-size: 16vw;
   font-weight: 900;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: Georgia, serif;
   letter-spacing: .04em;
 `);
 water.textContent = "Yasmim";
 bg.appendChild(water);
 
-// coro de flores ao redor do texto
-const w = () => bg.clientWidth;
-const h = () => bg.clientHeight;
 function placeFlowers(){
-  // limpa anteriores (exceto defs e texto)
   [...bg.querySelectorAll(".fuse")].forEach(n=>n.remove());
-
-  const cx = w()/2, cy = h()/2;
-  const R = Math.min(w(),h())*0.33;
-  const ringCounts = [8, 12]; // dois anéis
-
+  const cx = bg.clientWidth/2, cy = bg.clientHeight/2;
+  const R = Math.min(bg.clientWidth,bg.clientHeight)*0.33;
+  const ringCounts = [8, 12];
   ringCounts.forEach((count, ringIdx)=>{
     for(let i=0;i<count;i++){
       const ang = (i/count)*Math.PI*2 + (ringIdx? Math.PI/count : 0);
@@ -63,13 +55,12 @@ function placeFlowers(){
 placeFlowers();
 addEventListener("resize", placeFlowers);
 
-/* ===== dragão melhorado ===== */
+/* ===== dragão ===== */
 const svg = document.getElementById("dragon");
 const N = 80;
 const elems = [];
 let mouse = { x: innerWidth/2, y: innerHeight/2 };
 
-// gradiente e forma do segmento
 const defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
 defs.innerHTML = `
   <linearGradient id="dragonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -81,7 +72,6 @@ defs.innerHTML = `
 `;
 svg.appendChild(defs);
 
-// segmentos
 for(let i=0;i<N;i++){
   const use = document.createElementNS("http://www.w3.org/2000/svg","use");
   use.setAttributeNS("http://www.w3.org/1999/xlink","xlink:href","#seg");
@@ -89,7 +79,6 @@ for(let i=0;i<N;i++){
   elems.push({x: mouse.x, y: mouse.y, use});
 }
 
-// trilhas (linhas fluidas de fundo)
 const trails = [];
 for(let i=0;i<12;i++){
   const p = document.createElementNS("http://www.w3.org/2000/svg","path");
@@ -107,25 +96,19 @@ let t=0;
 (function run(){
   requestAnimationFrame(run);
   t += 0.05;
-
-  // cabeça
   let e = elems[0];
   e.x += (mouse.x - e.x)/6;
   e.y += (mouse.y - e.y)/6;
 
-  // corpo
   for(let i=1;i<N;i++){
     e = elems[i];
     const ep = elems[i-1];
     const a = Math.atan2(e.y-ep.y, e.x-ep.x);
     const wave = Math.sin(t + i/5) * 5;
-
     e.x += (ep.x - e.x)/1.9 + Math.cos(a + Math.PI/2)*wave*0.2;
     e.y += (ep.y - e.y)/1.9 + Math.sin(a + Math.PI/2)*wave*0.2;
-
     const s = 1.25 - i/N;
     const opacity = 0.75 * (1 - i/N);
-
     e.use.setAttribute("transform",
       `translate(${(ep.x+e.x)/2}, ${(ep.y+e.y)/2})
        rotate(${(180/Math.PI)*a})
@@ -133,7 +116,6 @@ let t=0;
     e.use.setAttribute("opacity", opacity);
   }
 
-  // trilhas
   trails.forEach((path, idx) => {
     const points = elems
       .filter((_, i) => i%4===0)
